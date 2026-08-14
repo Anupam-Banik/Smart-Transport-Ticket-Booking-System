@@ -30,9 +30,9 @@ Responsibilities:
 Role: Developer
 
 Responsibilities:
-6.  View Profile
-7.  Add Vehicle
-8.  View All Vehicles
+6. View Profile
+7. Add Vehicle
+8. View All Vehicles
 9. Update Vehicle
 10. Delete Vehicle
 
