@@ -26,7 +26,6 @@ Responsibilities:
 4.  Owner Login
 5.  Admin Login
   
-2. Ahsan Habib Rabby--
 
 Role: Developer
 
