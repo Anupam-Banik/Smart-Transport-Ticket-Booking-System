@@ -76,7 +76,8 @@ typedef struct
 
     char status[MAX_STATUS];
 
-}Booking;
+}
+Booking;
 char currentUser[MAX_NAME] = "";
 char currentRole[MAX_ROLE] = "";
 
@@ -85,7 +86,8 @@ typedef struct {
     uint32_t state[4];
     uint64_t bitCount;
     unsigned char buffer[64];
-} MD5_CTX;
+}
+ MD5_CTX;
 
 uint32_t K[64] = {
 0xd76aa478,0xe8c7b756,0x242070db,0xc1bdceee,
@@ -479,25 +481,9 @@ void initAdmin()
         fclose(fp);
     }
 }
-/*void refreshSystem()
-{
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
 
-    initAdmin();
-
-    printf("\n====================================\n");
-    printf("   SYSTEM REFRESH SUCCESSFUL\n");
-    printf("====================================\n");
-}*/
 /*====================================================
                 REGISTER USER
-=====================================================*/
-/*====================================================
-                    REGISTRATION
 =====================================================*/
 
 void registerUser(const char *role)
@@ -585,9 +571,6 @@ void registerUser(const char *role)
                     LOGIN
 =====================================================*/
 
-/*====================================================
-                        LOGIN
-=====================================================*/
 
 int login(const char *role)
 {
@@ -697,27 +680,28 @@ void logout()
 }
 /*====================================================
                  VIEW PROFILE
-=====================================================*/
+=====================================================
+viewProfile() function logged-in user's profile দেখানোর জন্য ব্যবহার করা হয়েছে।*/
 
 void viewProfile()
 {
-    if(strlen(currentUser)==0)
+    if(strlen(currentUser)==0) //এখানে strlen() দিয়ে currentUser-এর length check করা হচ্ছে।
     {
         printf("\nPlease Login First.\n");
         return;
     }
 
+    FILE *fp; //file pointer turi kora hoise ja file sathe kaj kore 
 
-    FILE *fp;
-
-    User u;
+    User u; /*এখানে User structure-এর একটি variable u তৈরি হয়েছে।
+                এটার মধ্যে temporarily একজন user-এর information রাখা হবে।*/
 
     fp=fopen(USER_FILE,"r");
 
 
     if(fp==NULL)
     {
-        printf("\nUser File Error.\n");
+        printf("\nUser File Error.\n");// file open na hile value null
         return;
     }
 
@@ -756,252 +740,24 @@ void viewProfile()
 
     printf("\nProfile Not Found.\n");
 } 
+
 /*====================================================
-                CHANGE PASSWORD
-=====================================================*/
-
-void changePassword()
-{
-    if(strlen(currentUser)==0)
-    {
-        printf("\nPlease Login First.\n");
-        return;
-    }
-
-
-    FILE *fp;
-    FILE *temp;
-
-    User u;
-
-    char oldPass[50];
-    char newPass[50];
-
-    char oldHash[33];
-    char newHash[33];
-
-    int updated=0;
-
-
-    printf("\n=====================================\n");
-    printf("           CHANGE PASSWORD\n");
-    printf("=====================================\n");
-
-
-    printf("Old Password : ");
-    scanf(" %[^\n]",oldPass);
-
-
-    md5Hash(oldPass,oldHash);
-
-
-
-    fp=fopen(USER_FILE,"r");
-
-    temp=fopen("temp_user.txt","w");
-
-
-    if(fp==NULL || temp==NULL)
-    {
-        printf("\nFile Error.\n");
-        return;
-    }
-
-
-
-    while(fscanf(fp,
-    "%d|%49[^|]|%32[^|]|%14[^|]|%19[^\n]",
-    &u.id,
-    u.username,
-    u.password,
-    u.role,
-    u.phone)==5)
-    {
-
-
-        if(strcmp(u.username,currentUser)==0 &&
-           strcmp(u.password,oldHash)==0)
-        {
-
-            printf("New Password : ");
-            scanf(" %[^\n]",newPass);
-
-
-            md5Hash(newPass,newHash);
-
-
-            strcpy(u.password,newHash);
-
-
-            updated=1;
-        }
-
-
-
-        fprintf(temp,
-        "%d|%s|%s|%s|%s\n",
-        u.id,
-        u.username,
-        u.password,
-        u.role,
-        u.phone);
-
-    }
-
-
-    fclose(fp);
-    fclose(temp);
-
-
-
-    remove(USER_FILE);
-    rename("temp_user.txt",USER_FILE);
-
-
-
-    if(updated)
-    {
-        printf("\nPassword Changed Successfully.\n");
-    }
-    else
-    {
-        printf("\nOld Password Incorrect.\n");
-    }
-
-}
-/*====================================================
-                FORGOT PASSWORD
-=====================================================*/
-
-void forgotPassword()
-{
-
-    FILE *fp;
-    FILE *temp;
-
-
-    User u;
-
-
-    char username[50];
-    char phone[20];
-
-    char newPass[50];
-    char hash[33];
-
-
-    int found=0;
-
-
-
-    printf("\n=====================================\n");
-    printf("            FORGOT PASSWORD\n");
-    printf("=====================================\n");
-
-
-    printf("Username : ");
-    scanf(" %[^\n]",username);
-
-
-    printf("Phone Number : ");
-    scanf(" %[^\n]",phone);
-
-
-
-    fp=fopen(USER_FILE,"r");
-
-    temp=fopen("temp_user.txt","w");
-
-
-
-    if(fp==NULL || temp==NULL)
-    {
-        printf("\nFile Error.\n");
-        return;
-    }
-
-
-
-    while(fscanf(fp,
-    "%d|%49[^|]|%32[^|]|%14[^|]|%19[^\n]",
-    &u.id,
-    u.username,
-    u.password,
-    u.role,
-    u.phone)==5)
-    {
-
-
-        if(strcmp(u.username,username)==0 &&
-           strcmp(u.phone,phone)==0)
-        {
-
-
-            printf("New Password : ");
-            scanf(" %[^\n]",newPass);
-
-
-
-            md5Hash(newPass,hash);
-
-
-            strcpy(u.password,hash);
-
-
-            found=1;
-
-        }
-
-
-
-        fprintf(temp,
-        "%d|%s|%s|%s|%s\n",
-        u.id,
-        u.username,
-        u.password,
-        u.role,
-        u.phone);
-
-    }
-
-
-
-    fclose(fp);
-    fclose(temp);
-
-
-
-    remove(USER_FILE);
-    rename("temp_user.txt",USER_FILE);
-
-
-
-    if(found)
-    {
-        printf("\nPassword Reset Successful.\n");
-    }
-    else
-    {
-        printf("\nUsername or Phone Incorrect.\n");
-    }
-
-}
-/*====================================================
-                ADD VEHICLE
+                   ADD VEHICLE
 =====================================================*/
 void addVehicle()
 {
     if(strcmp(currentRole,"owner")!=0 &&
-       strcmp(currentRole,"admin")!=0)
+       strcmp(currentRole,"admin")!=0) //strcmp() compares two strings.
     {
         printf("\nOnly Owner or Admin can add vehicle.\n");
         return;
     }
+    //Variable declaration
 
     FILE *fp;
     Vehicle v, temp;
 
-    int duplicate = 0;
+    int duplicate = 0;//No duplicate vehicle ID has been found so far.
     int choice;
 
     fp = fopen(VEHICLE_FILE, "a+");
@@ -1019,7 +775,7 @@ void addVehicle()
     printf("Vehicle ID : ");
     scanf("%d", &v.id);
 
-    rewind(fp);
+    rewind(fp);//rewind(fp) moves the file pointer back to the beginning of the file.
 
     while(fscanf(fp,
         "%d|%d|%19[^|]|%49[^|]|%49[^|]|%49[^|]|%29[^|]|%d|%d|%f",
@@ -1040,7 +796,7 @@ void addVehicle()
             break;
         }
     }
-
+            //Duplicate vehicle ID prevent করার জন্য আগে existing IDs check করা হয়েছে।
     if(duplicate)
     {
         printf("\nVehicle ID Already Exists.\n");
@@ -1084,7 +840,7 @@ void addVehicle()
     }
 
     getchar();
-
+//getchar() is used here to consume the leftover newline character from the input buffer before using fgets(
     printf("Company Name : ");
     fgets(v.company, sizeof(v.company), stdin);
     v.company[strcspn(v.company,"\n")] = '\0';
@@ -1119,9 +875,9 @@ void addVehicle()
 
     else if(strcmp(v.type,"Train")==0)
     {
-        if(v.totalSeats < 40 || v.totalSeats > 120)
+        if(v.totalSeats < 40 || v.totalSeats > 1200)
         {
-            printf("\nTrain seat must be between 40 and 120.\n");
+            printf("\nTrain seat must be between 40 and 1200.\n");
             fclose(fp);
             return;
         }
@@ -1129,9 +885,9 @@ void addVehicle()
 
     else if(strcmp(v.type,"Ship")==0)
     {
-        if(v.totalSeats < 50 || v.totalSeats > 500)
+        if(v.totalSeats < 50 || v.totalSeats > 5000)
         {
-            printf("\nShip seat must be between 50 and 500.\n");
+            printf("\nShip seat must be between 50 and 5000.\n");
             fclose(fp);
             return;
         }
@@ -1282,6 +1038,7 @@ void viewVehicleByID()
 =====================================================*/
 
 void updateVehicle()
+
 {
     if(strcmp(currentRole,"owner")!=0 &&
        strcmp(currentRole,"admin")!=0)
@@ -1296,7 +1053,7 @@ void updateVehicle()
     FILE *temp;
 
 
-    Vehicle v;
+    Vehicle v;//File থেকে একটা vehicle-এর data v-এর মধ্যে রাখবে।
 
 
     int id;
@@ -1313,9 +1070,9 @@ void updateVehicle()
 
 
 
-    fp=fopen(VEHICLE_FILE,"r");
+    fp=fopen(VEHICLE_FILE,"r");//vehicles.txt read mode-এ open হচ্ছে।
 
-    temp=fopen("temp_vehicle.txt","w");
+    temp=fopen("temp_vehicle.txt","w");//এখানে নতুন temporary file তৈরি হচ্ছে।
 
 
 
@@ -1399,7 +1156,7 @@ void updateVehicle()
 
     remove(VEHICLE_FILE);
 
-    rename("temp_vehicle.txt",VEHICLE_FILE);
+    rename("temp_vehicle.txt",VEHICLE_FILE);//updated file-টাই এখন original file হয়ে গেল।
 
 
 
@@ -2640,6 +2397,236 @@ void adminReport()
 
     printf("============================================\n");
 
+} 
+/*====================================================
+                CHANGE PASSWORD
+=====================================================*/
+
+void changePassword()
+{
+    if(strlen(currentUser)==0)
+    {
+        printf("\nPlease Login First.\n");
+        return;
+    }
+
+
+    FILE *fp;
+    FILE *temp;
+
+    User u;
+
+    char oldPass[50];
+    char newPass[50];
+
+    char oldHash[33];
+    char newHash[33];
+
+    int updated=0;
+
+
+    printf("\n=====================================\n");
+    printf("           CHANGE PASSWORD\n");
+    printf("=====================================\n");
+
+
+    printf("Old Password : ");
+    scanf(" %[^\n]",oldPass);
+
+
+    md5Hash(oldPass,oldHash);
+
+
+
+    fp=fopen(USER_FILE,"r");
+
+    temp=fopen("temp_user.txt","w");
+
+
+    if(fp==NULL || temp==NULL)
+    {
+        printf("\nFile Error.\n");
+        return;
+    }
+
+
+
+    while(fscanf(fp,
+    "%d|%49[^|]|%32[^|]|%14[^|]|%19[^\n]",
+    &u.id,
+    u.username,
+    u.password,
+    u.role,
+    u.phone)==5)
+    {
+
+
+        if(strcmp(u.username,currentUser)==0 &&
+           strcmp(u.password,oldHash)==0)
+        {
+
+            printf("New Password : ");
+            scanf(" %[^\n]",newPass);
+
+
+            md5Hash(newPass,newHash);
+
+
+            strcpy(u.password,newHash);
+
+
+            updated=1;
+        }
+
+
+
+        fprintf(temp,
+        "%d|%s|%s|%s|%s\n",
+        u.id,
+        u.username,
+        u.password,
+        u.role,
+        u.phone);
+
+    }
+
+
+    fclose(fp);
+    fclose(temp);
+
+
+
+    remove(USER_FILE);
+    rename("temp_user.txt",USER_FILE);
+
+
+
+    if(updated)
+    {
+        printf("\nPassword Changed Successfully.\n");
+    }
+    else
+    {
+        printf("\nOld Password Incorrect.\n");
+    }
+
+}
+/*====================================================
+                FORGOT PASSWORD
+=====================================================*/
+
+void forgotPassword()
+{
+
+    FILE *fp;
+    FILE *temp;
+
+
+    User u;
+
+
+    char username[50];
+    char phone[20];
+
+    char newPass[50];
+    char hash[33];
+
+
+    int found=0;
+
+
+
+    printf("\n=====================================\n");
+    printf("            FORGOT PASSWORD\n");
+    printf("=====================================\n");
+
+
+    printf("Username : ");
+    scanf(" %[^\n]",username);
+
+
+    printf("Phone Number : ");
+    scanf(" %[^\n]",phone);
+
+
+
+    fp=fopen(USER_FILE,"r");
+
+    temp=fopen("temp_user.txt","w");
+
+
+
+    if(fp==NULL || temp==NULL)
+    {
+        printf("\nFile Error.\n");
+        return;
+    }
+
+
+
+    while(fscanf(fp,
+    "%d|%49[^|]|%32[^|]|%14[^|]|%19[^\n]",
+    &u.id,
+    u.username,
+    u.password,
+    u.role,
+    u.phone)==5)
+    {
+
+
+        if(strcmp(u.username,username)==0 &&
+           strcmp(u.phone,phone)==0)
+        {
+
+
+            printf("New Password : ");
+            scanf(" %[^\n]",newPass);
+
+
+
+            md5Hash(newPass,hash);
+
+
+            strcpy(u.password,hash);
+
+
+            found=1;
+
+        }
+
+
+
+        fprintf(temp,
+        "%d|%s|%s|%s|%s\n",
+        u.id,
+        u.username,
+        u.password,
+        u.role,
+        u.phone);
+
+    }
+
+
+
+    fclose(fp);
+    fclose(temp);
+
+
+
+    remove(USER_FILE);
+    rename("temp_user.txt",USER_FILE);
+
+
+
+    if(found)
+    {
+        printf("\nPassword Reset Successful.\n");
+    }
+    else
+    {
+        printf("\nUsername or Phone Incorrect.\n");
+    }
+
 }
 /*====================================================
                 SYSTEM REFRESH
@@ -2725,10 +2712,10 @@ int main()
         printf("8.  View All Vehicles\n");
         printf("9. Update Vehicle\n");
         printf("10. Delete Vehicle\n");
-        printf("11. Search Vehicle\n");
+        
 
         printf("-------------------------------------------------\n");
-
+        printf("11. Search Vehicle\n");
         printf("12. Book Ticket\n");
         printf("13. View Booking\n");
         printf("14. Cancel Ticket\n");
