@@ -78,6 +78,9 @@ typedef struct
 
 }
 Booking;
+char currentUser[MAX_NAME] = "";
+char currentRole[MAX_ROLE] = "";
+int currentUserId = 1;
 void viewProfile()
 {
     if(strlen(currentUser)==0) //এখানে strlen() দিয়ে currentUser-এর length check করা হচ্ছে।
@@ -686,4 +689,49 @@ void deleteVehicle()
         printf("\nVehicle Not Found or Access Denied.\n");
     }
 
+}
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n========== MAIN MENU ==========\n");
+        printf("1. View Profile\n");
+        printf("2. Add Vehicle\n");
+        printf("3. View Vehicle by ID\n");
+        printf("4. Update Vehicle\n");
+        printf("5. Delete Vehicle\n");
+        printf("0. Exit\n");
+        printf("===============================\n");
+        printf("Enter Choice: ");
+        
+        if (scanf("%d", &choice) != 1) {
+            printf("\nInvalid input! Exiting...\n");
+            break;
+        }
+
+        switch (choice) {
+            case 1:
+                viewProfile();
+                break;
+            case 2:
+                addVehicle();
+                break;
+            case 3:
+                viewVehicleByID();
+                break;
+            case 4:
+                updateVehicle();
+                break;
+            case 5:
+                deleteVehicle();
+                break;
+            case 0:
+                printf("\nExiting System. Goodbye!\n");
+                return 0;
+            default:
+                printf("\nInvalid Choice! Try again.\n");
+        }
+    }
+
+    return 0;
 }
